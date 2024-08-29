@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Калькулятор Окладов и Премий</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      button {
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      #calculate-button {
+        background-color: #28a745;
+        color: white;
+      }
+
+      #reset-button {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      #result {
+        margin-top: 20px;
+        background-color: #f7f7f7;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+
+      .columns {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .column {
+        width: 48%;
+        padding: 10px;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+
+      .column h2 {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Калькулятор Окладов и Премий</h1>
+
+      <div class="input-group">
+        <label for="monthly-salary">Месячный оклад:</label>
+        <input
+          type="number"
+          id="monthly-salary"
+          placeholder="Введите месячный оклад"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="percentage">Процент от общего месячного дохода (%):</label>
+        <input type="number" id="percentage" placeholder="Введите процент" />
+      </div>
+
+      <div class="input-group">
+        <label for="tax-type">Тип оклада:</label>
+        <select id="tax-type">
+          <option value="gross">Gross (до вычета налогов)</option>
+          <option value="net">Net (после вычета налогов)</option>
+        </select>
+      </div>
+
+      <div class="buttons">
+        <button id="calculate-button">Рассчитать</button>
+        <button id="reset-button">Сбросить</button>
+      </div>
+
+      <div id="result">
+        <div class="columns">
+          <div class="column" id="net-column">
+            <h2>Net</h2>
+            <div id="net-results"></div>
+          </div>
+          <div class="column" id="gross-column">
+            <h2>Gross</h2>
+            <div id="gross-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const result = document.getElementById("result");
+      const calculateButton = document.getElementById("calculate-button");
+      const resetButton = document.getElementById("reset-button");
+      const monthlySalaryField = document.getElementById("monthly-salary");
+      const percentageField = document.getElementById("percentage");
+      const taxTypeField = document.getElementById("tax-type");
+
+      calculateButton.addEventListener("click", function () {
+        const monthlySalary = parseFloat(monthlySalaryField.value) || 0;
+        let percentage = parseFloat(percentageField.value) || 0;
+        const taxType = taxTypeField.value;
+        const taxRate = 0.13;
+
+        // Если процент не введен или равен 0, считаем что оклад составляет 100%
+        if (percentage === 0) {
+          percentage = 100;
+        }
+
+        if (percentage <= 0 || percentage > 100) {
+          result.innerHTML = `
+                    <p style="color: red;">Процент должен быть больше 0 и меньше или равен 100.</p>
+                `;
+          return;
+        }
+
+        let grossMonthlySalary = monthlySalary;
+        let netMonthlySalary = monthlySalary;
+
+        if (taxType === "net") {
+          grossMonthlySalary = monthlySalary / (1 - taxRate);
+        } else {
+          netMonthlySalary = monthlySalary * (1 - taxRate);
+        }
+
+        // Годовой оклад
+        const annualGrossSalary = grossMonthlySalary * 12;
+        const annualNetSalary = netMonthlySalary * 12;
+
+        // Общий годовой доход
+        const annualGrossTotalIncome = annualGrossSalary / (percentage / 100);
+        const annualNetTotalIncome = annualNetSalary / (percentage / 100);
+
+        // Годовая премия
+        const annualGrossBonus = annualGrossTotalIncome - annualGrossSalary;
+        const annualNetBonus = annualNetTotalIncome - annualNetSalary;
+
+        // Ежемесячный доход
+        const monthlyGrossTotalIncome = annualGrossTotalIncome / 12;
+        const monthlyNetTotalIncome = annualNetTotalIncome / 12;
+
+        // Ежемесячная премия
+        const monthlyGrossBonus = annualGrossBonus / 12;
+        const monthlyNetBonus = annualNetBonus / 12;
+
+        // Отображение результатов
+        document.getElementById("net-results").innerHTML = `
+                <p>Годовой оклад: ${annualNetSalary.toFixed(2)} руб.</p>
+                <p>Общий годовой доход: ${annualNetTotalIncome.toFixed(
+                  2
+                )} руб.</p>
+                <p>Годовая премия: ${annualNetBonus.toFixed(2)} руб.</p>
+                <p>Общий месячный доход: ${monthlyNetTotalIncome.toFixed(
+                  2
+                )} руб.</p>
+                <p>Ежемесячная премия: ${monthlyNetBonus.toFixed(2)} руб.</p>
+            `;
+        document.getElementById("gross-results").innerHTML = `
+                <p>Годовой оклад: ${annualGrossSalary.toFixed(2)} руб.</p>
+                <p>Общий годовой доход: ${annualGrossTotalIncome.toFixed(
+                  2
+                )} руб.</p>
+                <p>Годовая премия: ${annualGrossBonus.toFixed(2)} руб.</p>
+                <p>Общий месячный доход: ${monthlyGrossTotalIncome.toFixed(
+                  2
+                )} руб.</p>
+                <p>Ежемесячная премия: ${monthlyGrossBonus.toFixed(2)} руб.</p>
+            `;
+      });
+
+      resetButton.addEventListener("click", function () {
+        monthlySalaryField.value = "";
+        percentageField.value = "";
+        result.innerHTML = `
+                <div class="columns">
+                  <div class="column" id="net-column">
+                    <h2>Net</h2>
+                    <div id="net-results"></div>
+                  </div>
+                  <div class="column" id="gross-column">
+                    <h2>Gross</h2>
+                    <div id="gross-results"></div>
+                  </div>
+                </div>
+            `;
+      });
+    </script>
+  </body>
+</html>
