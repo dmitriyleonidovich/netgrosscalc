@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Калькулятор Окладов и Премий</title>
+    <link rel="icon" type="image/png" href="/shark.png" />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -186,25 +187,29 @@
         // Отображение результатов
         document.getElementById("net-results").innerHTML = `
                 <p>Годовой оклад: ${annualNetSalary.toFixed(2)} руб.</p>
-                <p>Общий годовой доход: ${annualNetTotalIncome.toFixed(
-                  2
-                )} руб.</p>
                 <p>Годовая премия: ${annualNetBonus.toFixed(2)} руб.</p>
-                <p>Общий месячный доход: ${monthlyNetTotalIncome.toFixed(
+                <p><b>Общий годовой доход: ${annualNetTotalIncome.toFixed(
                   2
-                )} руб.</p>
+                )} руб.<b></p>
+                <hr>
+                <p>Ежемесяченый оклад: ${netMonthlySalary.toFexed(2)}.</p>
                 <p>Ежемесячная премия: ${monthlyNetBonus.toFixed(2)} руб.</p>
+                <p><b>Общий месячный доход: ${monthlyNetTotalIncome.toFixed(
+                  2
+                )} руб.</b></p>
             `;
         document.getElementById("gross-results").innerHTML = `
                 <p>Годовой оклад: ${annualGrossSalary.toFixed(2)} руб.</p>
-                <p>Общий годовой доход: ${annualGrossTotalIncome.toFixed(
-                  2
-                )} руб.</p>
                 <p>Годовая премия: ${annualGrossBonus.toFixed(2)} руб.</p>
-                <p>Общий месячный доход: ${monthlyGrossTotalIncome.toFixed(
+                <p><b>Общий годовой доход: ${annualGrossTotalIncome.toFixed(
                   2
-                )} руб.</p>
+                )} руб.</b></p>
+                <hr>
+                <p>Ежемесяченый оклад: ${grossMonthlySalary.toFexed(2)}.</p>
                 <p>Ежемесячная премия: ${monthlyGrossBonus.toFixed(2)} руб.</p>
+                <p><b>Общий месячный доход: ${monthlyGrossTotalIncome.toFixed(
+                  2
+                )} руб.</b></p>
             `;
       });
 
