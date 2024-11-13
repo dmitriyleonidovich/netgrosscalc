@@ -1,234 +1,339 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Калькулятор Окладов и Премий</title>
-    <link rel="icon" type="image/png" href="https://i.ibb.co/HXFwr25/shark.png" />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Калькулятор Окладов и Премий</title>
+        <link rel="icon" type="image/png" href="https://i.ibb.co/HXFwr25/shark.png" />
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
 
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-      }
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+            }
 
-      .input-group {
-        margin-bottom: 15px;
-      }
+            .tabs {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
 
-      .input-group label {
-        display: block;
-        margin-bottom: 5px;
-      }
+            .tab {
+                padding: 10px 20px;
+                border: 1px solid #ccc;
+                cursor: pointer;
+                margin: 0 5px;
+                border-radius: 5px;
+            }
 
-      .input-group input,
-      .input-group select {
-        width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-      }
+            .tab.active {
+                background-color: #28a745;
+                color: white;
+            }
 
-      .buttons {
-        display: flex;
-        justify-content: space-between;
-      }
+            .tab-content {
+                display: none;
+            }
 
-      button {
-        padding: 10px 15px;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-      }
+            .tab-content.active {
+                display: block;
+            }
 
-      #calculate-button {
-        background-color: #28a745;
-        color: white;
-      }
+            .input-group {
+                margin-bottom: 15px;
+            }
 
-      #reset-button {
-        background-color: #dc3545;
-        color: white;
-      }
+            .input-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
 
-      #result {
-        margin-top: 20px;
-        background-color: #f7f7f7;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-      }
+            .input-group input,
+            .input-group select {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
 
-      .columns {
-        display: flex;
-        justify-content: space-between;
-      }
+            .buttons {
+                display: flex;
+                justify-content: space-between;
+            }
 
-      .column {
-        width: 48%;
-        padding: 10px;
-        box-sizing: border-box;
-        background-color: #ffffff;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-      }
+            button {
+                padding: 10px 15px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+            }
 
-      .column h2 {
-        text-align: center;
-      }
-    </style>
-  </head>
+            #calculate-button,
+            #calculate-button2 {
+                background-color: #28a745;
+                color: white;
+            }
 
-  <body>
-    <div class="container">
-      <h1>Калькулятор Окладов и Премий</h1>
+            #reset-button,
+            #reset-button2 {
+                background-color: #dc3545;
+                color: white;
+            }
 
-      <div class="input-group">
-        <label for="monthly-salary">Месячный оклад:</label>
-        <input
-          type="number"
-          id="monthly-salary"
-          placeholder="Введите месячный оклад"
-        />
-      </div>
+            #result {
+                margin-top: 20px;
+                background-color: #f7f7f7;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #ddd;
+            }
 
-      <div class="input-group">
-        <label for="percentage">Процент от общего месячного дохода (%):</label>
-        <input type="number" id="percentage" placeholder="Введите процент" />
-      </div>
+            .columns {
+                display: flex;
+                justify-content: space-between;
+            }
 
-      <div class="input-group">
-        <label for="tax-type">Тип оклада:</label>
-        <select id="tax-type">
-          <option value="gross">Gross (до вычета налогов)</option>
-          <option value="net">Net (после вычета налогов)</option>
-        </select>
-      </div>
+            .column {
+                width: 48%;
+                padding: 10px;
+                box-sizing: border-box;
+                background-color: #ffffff;
+                border-radius: 5px;
+                border: 1px solid #ddd;
+            }
 
-      <div class="buttons">
-        <button id="calculate-button">Рассчитать</button>
-        <button id="reset-button">Сбросить</button>
-      </div>
+            .column h2 {
+                text-align: center;
+            }
 
-      <div id="result">
-        <div class="columns">
-          <div class="column" id="net-column">
-            <h2>Net</h2>
-            <div id="net-results"></div>
-          </div>
-          <div class="column" id="gross-column">
-            <h2>Gross</h2>
-            <div id="gross-results"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+            .calc-name {
+                text-align: center;
+            }
+        </style>
+    </head>
 
-    <script>
-      const result = document.getElementById("result");
-      const calculateButton = document.getElementById("calculate-button");
-      const resetButton = document.getElementById("reset-button");
-      const monthlySalaryField = document.getElementById("monthly-salary");
-      const percentageField = document.getElementById("percentage");
-      const taxTypeField = document.getElementById("tax-type");
+    <body>
+        <div class="container">
+            <h1 class="calc-name">Калькулька</h1>
+            <div class="tabs">
+                <div class="tab active" data-tab="1">Знаем месячный оклад</div>
+                <div class="tab" data-tab="2">Знаем годовой доход</div>
+            </div>
 
-      calculateButton.addEventListener("click", function () {
-        const monthlySalary = parseFloat(monthlySalaryField.value) || 0;
-        let percentage = parseFloat(percentageField.value) || 0;
-        const taxType = taxTypeField.value;
-        const taxRate = 0.13;
-
-        // Если процент не введен или равен 0, считаем что оклад составляет 100%
-        if (percentage === 0) {
-          percentage = 100;
-        }
-
-        if (percentage <= 0 || percentage > 100) {
-          result.innerHTML = `
-                    <p style="color: red;">Процент должен быть больше 0 и меньше или равен 100.</p>
-                `;
-          return;
-        }
-
-        let grossMonthlySalary = monthlySalary;
-        let netMonthlySalary = monthlySalary;
-
-        if (taxType === "net") {
-          grossMonthlySalary = monthlySalary / (1 - taxRate);
-        } else {
-          netMonthlySalary = monthlySalary * (1 - taxRate);
-        }
-
-        // Годовой оклад
-        const annualGrossSalary = grossMonthlySalary * 12;
-        const annualNetSalary = netMonthlySalary * 12;
-
-        // Общий годовой доход
-        const annualGrossTotalIncome = annualGrossSalary / (percentage / 100);
-        const annualNetTotalIncome = annualNetSalary / (percentage / 100);
-
-        // Годовая премия
-        const annualGrossBonus = annualGrossTotalIncome - annualGrossSalary;
-        const annualNetBonus = annualNetTotalIncome - annualNetSalary;
-
-        // Ежемесячный доход
-        const monthlyGrossTotalIncome = annualGrossTotalIncome / 12;
-        const monthlyNetTotalIncome = annualNetTotalIncome / 12;
-
-        // Ежемесячная премия
-        const monthlyGrossBonus = annualGrossBonus / 12;
-        const monthlyNetBonus = annualNetBonus / 12;
-
-        // Отображение результатов
-        document.getElementById("net-results").innerHTML = `
-                <p>Годовой оклад: ${annualNetSalary.toFixed(2)} руб.</p>
-                <p>Годовая премия: ${annualNetBonus.toFixed(2)} руб.</p>
-                <p><b>Общий годовой доход: ${annualNetTotalIncome.toFixed(
-                  2
-                )} руб.</b></p>
-                <hr>
-                <p>Ежемесячный оклад: ${netMonthlySalary.toFixed(2)}.</p>
-                <p>Ежемесячная премия: ${monthlyNetBonus.toFixed(2)} руб.</p>
-                <p><b>Общий месячный доход: ${monthlyNetTotalIncome.toFixed(
-                  2
-                )} руб.</b></p>
-            `;
-        document.getElementById("gross-results").innerHTML = `
-                <p>Годовой оклад: ${annualGrossSalary.toFixed(2)} руб.</p>
-                <p>Годовая премия: ${annualGrossBonus.toFixed(2)} руб.</p>
-                <p><b>Общий годовой доход: ${annualGrossTotalIncome.toFixed(
-                  2
-                )} руб.</b></p>
-                <hr>
-                <p>Ежемесячный оклад: ${grossMonthlySalary.toFixed(2)}.</p>
-                <p>Ежемесячная премия: ${monthlyGrossBonus.toFixed(2)} руб.</p>
-                <p><b>Общий месячный доход: ${monthlyGrossTotalIncome.toFixed(
-                  2
-                )} руб.</b></p>
-            `;
-      });
-
-      resetButton.addEventListener("click", function () {
-        monthlySalaryField.value = "";
-        percentageField.value = "";
-        result.innerHTML = `
-                <div class="columns">
-                  <div class="column" id="net-column">
-                    <h2>Net</h2>
-                    <div id="net-results"></div>
-                  </div>
-                  <div class="column" id="gross-column">
-                    <h2>Gross</h2>
-                    <div id="gross-results"></div>
-                  </div>
+            <div class="tab-content active" id="tab-content-1">
+                <div class="input-group">
+                    <label for="monthly-salary">Месячный оклад:</label>
+                    <input type="number" id="monthly-salary" placeholder="Введите месячный оклад" />
                 </div>
-            `;
-      });
-    </script>
-  </body>
+
+                <div class="input-group">
+                    <label for="percentage">Процент от общего годового дохода (%):</label>
+                    <input type="number" id="percentage" placeholder="Введите процент" />
+                </div>
+
+                <div class="input-group">
+                    <label for="tax-type">Тип оклада:</label>
+                    <select id="tax-type">
+                        <option value="gross">Gross (до вычета налогов)</option>
+                        <option value="net">Net (после вычета налогов)</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button id="calculate-button">Рассчитать</button>
+                    <button id="reset-button">Сбросить</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-content-2">
+                <div class="input-group">
+                    <label for="total-income">Общий годовой доход:</label>
+                    <input
+                        type="number"
+                        id="total-income"
+                        placeholder="Введите общий годовой доход"
+                    />
+                </div>
+
+                <div class="input-group">
+                    <label for="salary-percentage">Процент от общего годового дохода (%):</label>
+                    <input type="number" id="salary-percentage" placeholder="Введите процент" />
+                </div>
+
+                <div class="input-group">
+                    <label for="tax-type2">Тип оклада:</label>
+                    <select id="tax-type2">
+                        <option value="gross">Gross (до вычета налогов)</option>
+                        <option value="net">Net (после вычета налогов)</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button id="calculate-button2">Рассчитать</button>
+                    <button id="reset-button2">Сбросить</button>
+                </div>
+            </div>
+
+            <div id="result">
+                <div class="columns">
+                    <div class="column" id="net-column">
+                        <h2>Net</h2>
+                        <div id="net-results"></div>
+                    </div>
+                    <div class="column" id="gross-column">
+                        <h2>Gross</h2>
+                        <div id="gross-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function calculateIncome(monthlySalary, percentage, taxType) {
+                const taxRate = 0.13;
+
+                if (percentage <= 0 || percentage > 100) {
+                    result.innerHTML = `
+            <p style="color: red;">Процент должен быть больше 0 и меньше или равен 100.</p>
+          `;
+                    return;
+                }
+
+                let grossMonthlySalary = monthlySalary;
+                let netMonthlySalary = monthlySalary;
+
+                if (taxType === 'net') {
+                    grossMonthlySalary = monthlySalary / (1 - taxRate);
+                } else {
+                    netMonthlySalary = monthlySalary * (1 - taxRate);
+                }
+
+                // Годовой оклад
+                const annualGrossSalary = grossMonthlySalary * 12;
+                const annualNetSalary = netMonthlySalary * 12;
+
+                // Общий годовой доход
+                const annualGrossTotalIncome = annualGrossSalary / (percentage / 100);
+                const annualNetTotalIncome = annualNetSalary / (percentage / 100);
+
+                // Годовая премия
+                const annualGrossBonus = annualGrossTotalIncome - annualGrossSalary;
+                const annualNetBonus = annualNetTotalIncome - annualNetSalary;
+
+                // Ежемесячный доход
+                const monthlyGrossTotalIncome = annualGrossTotalIncome / 12;
+                const monthlyNetTotalIncome = annualNetTotalIncome / 12;
+
+                // Ежемесячная премия
+                const monthlyGrossBonus = annualGrossBonus / 12;
+                const monthlyNetBonus = annualNetBonus / 12;
+
+                // Отображение результатов
+                document.getElementById('net-results').innerHTML = `
+          <p>Годовой оклад: ${annualNetSalary.toFixed(2)} руб.</p>
+          <p>Годовая премия: ${annualNetBonus.toFixed(2)} руб.</p>
+          <p><b>Общий годовой доход: ${annualNetTotalIncome.toFixed(2)} руб.</b></p>
+          <hr>
+          <p>Ежемесячный оклад: ${netMonthlySalary.toFixed(2)}.</p>
+          <p>Ежемесячная премия: ${monthlyNetBonus.toFixed(2)} руб.</p>
+          <p><b>Общий месячный доход: ${monthlyNetTotalIncome.toFixed(2)} руб.</b></p>
+        `;
+                document.getElementById('gross-results').innerHTML = `
+          <p>Годовой оклад: ${annualGrossSalary.toFixed(2)} руб.</p>
+          <p>Годовая премия: ${annualGrossBonus.toFixed(2)} руб.</p>
+          <p><b>Общий годовой доход: ${annualGrossTotalIncome.toFixed(2)} руб.</b></p>
+          <hr>
+          <p>Ежемесячный оклад: ${grossMonthlySalary.toFixed(2)}.</p>
+          <p>Ежемесячная премия: ${monthlyGrossBonus.toFixed(2)} руб.</p>
+          <p><b>Общий месячный доход: ${monthlyGrossTotalIncome.toFixed(2)} руб.</b></p>
+        `;
+            }
+
+            document.querySelectorAll('.tab').forEach((tab) => {
+                tab.addEventListener('click', function () {
+                    document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+                    document
+                        .querySelectorAll('.tab-content')
+                        .forEach((tc) => tc.classList.remove('active'));
+                    this.classList.add('active');
+                    document
+                        .getElementById('tab-content-' + this.dataset.tab)
+                        .classList.add('active');
+                });
+            });
+
+            const calculateButton = document.getElementById('calculate-button');
+            const resetButton = document.getElementById('reset-button');
+            const monthlySalaryField = document.getElementById('monthly-salary');
+            const percentageField = document.getElementById('percentage');
+            const taxTypeField = document.getElementById('tax-type');
+
+            calculateButton.addEventListener('click', function () {
+                const monthlySalary = parseFloat(monthlySalaryField.value) || 0;
+                let percentage = parseFloat(percentageField.value) || 0;
+
+                // Если процент не введен или равен 0, считаем что оклад составляет 100%
+                if (percentage === 0) {
+                    percentage = 100;
+                }
+
+                calculateIncome(monthlySalary, percentage, taxTypeField.value);
+            });
+
+            resetButton.addEventListener('click', function () {
+                monthlySalaryField.value = '';
+                percentageField.value = '';
+                result.innerHTML = `
+          <div class="columns">
+            <div class="column" id="net-column">
+              <h2>Net</h2>
+              <div id="net-results"></div>
+            </div>
+            <div class="column" id="gross-column">
+              <h2>Gross</h2>
+              <div id="gross-results"></div>
+            </div>
+          </div>
+        `;
+            });
+
+            const calculateButton2 = document.getElementById('calculate-button2');
+            const resetButton2 = document.getElementById('reset-button2');
+            const totalIncomeField = document.getElementById('total-income');
+            const salaryPercentageField = document.getElementById('salary-percentage');
+            const taxTypeField2 = document.getElementById('tax-type2');
+
+            calculateButton2.addEventListener('click', function () {
+                const totalIncome = parseFloat(totalIncomeField.value) || 0;
+                let salaryPercentage = parseFloat(salaryPercentageField.value) || 100;
+
+                // Calculate monthly salary from annual total income
+                const monthlySalary = (totalIncome * (salaryPercentage / 100)) / 12;
+
+                calculateIncome(monthlySalary, salaryPercentage, taxTypeField2.value);
+            });
+
+            resetButton2.addEventListener('click', function () {
+                totalIncomeField.value = '';
+                salaryPercentageField.value = '';
+                result.innerHTML = `
+          <div class="columns">
+            <div class="column" id="net-column">
+              <h2>Net</h2>
+              <div id="net-results"></div>
+            </div>
+            <div class="column" id="gross-column">
+              <h2>Gross</h2>
+              <div id="gross-results"></div>
+            </div>
+          </div>
+        `;
+            });
+        </script>
+    </body>
 </html>
