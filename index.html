@@ -194,13 +194,17 @@
         </div>
 
         <script>
+            function formatNumber(num) {
+                return new Intl.NumberFormat('ru-RU').format(num);
+            }
+
             function calculateIncome(monthlySalary, percentage, taxType) {
                 const taxRate = 0.13;
 
                 if (percentage <= 0 || percentage > 100) {
                     result.innerHTML = `
-            <p style="color: red;">Процент должен быть больше 0 и меньше или равен 100.</p>
-          `;
+      <p style="color: red;">Процент должен быть больше 0 и меньше или равен 100.</p>
+    `;
                     return;
                 }
 
@@ -235,23 +239,23 @@
 
                 // Отображение результатов
                 document.getElementById('net-results').innerHTML = `
-          <p>Годовой оклад: ${annualNetSalary.toFixed(2)} руб.</p>
-          <p>Годовая премия: ${annualNetBonus.toFixed(2)} руб.</p>
-          <p><b>Общий годовой доход: ${annualNetTotalIncome.toFixed(2)} руб.</b></p>
-          <hr>
-          <p>Ежемесячный оклад: ${netMonthlySalary.toFixed(2)}.</p>
-          <p>Ежемесячная премия: ${monthlyNetBonus.toFixed(2)} руб.</p>
-          <p><b>Общий месячный доход: ${monthlyNetTotalIncome.toFixed(2)} руб.</b></p>
-        `;
+    <p>Годовой оклад: ${formatNumber(annualNetSalary.toFixed(2))} руб.</p>
+    <p>Годовая премия: ${formatNumber(annualNetBonus.toFixed(2))} руб.</p>
+    <p><b>Общий годовой доход: ${formatNumber(annualNetTotalIncome.toFixed(2))} руб.</b></p>
+    <hr>
+    <p>Ежемесячный оклад: ${formatNumber(netMonthlySalary.toFixed(2))} руб.</p>
+    <p>Ежемесячная премия: ${formatNumber(monthlyNetBonus.toFixed(2))} руб.</p>
+    <p><b>Общий месячный доход: ${formatNumber(monthlyNetTotalIncome.toFixed(2))} руб.</b></p>
+  `;
                 document.getElementById('gross-results').innerHTML = `
-          <p>Годовой оклад: ${annualGrossSalary.toFixed(2)} руб.</p>
-          <p>Годовая премия: ${annualGrossBonus.toFixed(2)} руб.</p>
-          <p><b>Общий годовой доход: ${annualGrossTotalIncome.toFixed(2)} руб.</b></p>
-          <hr>
-          <p>Ежемесячный оклад: ${grossMonthlySalary.toFixed(2)}.</p>
-          <p>Ежемесячная премия: ${monthlyGrossBonus.toFixed(2)} руб.</p>
-          <p><b>Общий месячный доход: ${monthlyGrossTotalIncome.toFixed(2)} руб.</b></p>
-        `;
+    <p>Годовой оклад: ${formatNumber(annualGrossSalary.toFixed(2))} руб.</p>
+    <p>Годовая премия: ${formatNumber(annualGrossBonus.toFixed(2))} руб.</p>
+    <p><b>Общий годовой доход: ${formatNumber(annualGrossTotalIncome.toFixed(2))} руб.</b></p>
+    <hr>
+    <p>Ежемесячный оклад: ${formatNumber(grossMonthlySalary.toFixed(2))} руб.</p>
+    <p>Ежемесячная премия: ${formatNumber(monthlyGrossBonus.toFixed(2))} руб.</p>
+    <p><b>Общий месячный доход: ${formatNumber(monthlyGrossTotalIncome.toFixed(2))} руб.</b></p>
+  `;
             }
 
             document.querySelectorAll('.tab').forEach((tab) => {
@@ -312,7 +316,6 @@
                 const totalIncome = parseFloat(totalIncomeField.value) || 0;
                 let salaryPercentage = parseFloat(salaryPercentageField.value) || 100;
 
-                // Calculate monthly salary from annual total income
                 const monthlySalary = (totalIncome * (salaryPercentage / 100)) / 12;
 
                 calculateIncome(monthlySalary, salaryPercentage, taxTypeField2.value);
